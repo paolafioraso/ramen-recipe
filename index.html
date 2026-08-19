@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>ramen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css?v=layout15" />
+  </head>
+  <body>
+    <section class="screen screen-intro" id="screen-intro" data-screen="intro">
+      <p class="intro-copy">
+        Wanna see my Ramen?<br />
+        Say <button type="button" class="text-btn intro-cta" data-go="home">LET’S GO</button>
+      </p>
+    </section>
+
+    <section class="screen screen-home" id="screen-home" data-screen="home" hidden>
+      <button type="button" class="home-block home-why" data-go="why">
+        <span class="home-title">WHY</span>
+        <span class="home-sub">Say <span class="keyword">WHY</span> to discover the reasons<br />behind the recipe's choice.</span>
+      </button>
+      <div class="home-bowl-wrap" aria-hidden="true">
+        <img class="home-bowl" src="assets/home.png" alt="" />
+      </div>
+      <button type="button" class="home-block home-howto" data-go="howto">
+        <span class="home-sub">Say <span class="keyword">HOW TO</span> in order to get the<br />procedure to prepare the recipe.</span>
+        <span class="home-title">HOW-TO</span>
+      </button>
+    </section>
+
+    <section class="screen screen-why" id="screen-why" data-screen="why" hidden>
+      <header class="page-chrome">
+        <h1 class="page-title">WHY</h1>
+        <button type="button" class="text-btn back-btn" data-go="home">back</button>
+      </header>
+      <div class="quiz" id="quiz">
+        <div class="quiz-head">
+          <p class="quiz-prompt">Pick your option to unlock the <strong>MANIFESTO.</strong></p>
+          <p class="quiz-progress" id="quiz-progress"></p>
+        </div>
+        <div class="quiz-rule" aria-hidden="true"></div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-choice" data-choice="a" id="quiz-choice-a"></button>
+          <button type="button" class="quiz-choice" data-choice="b" id="quiz-choice-b"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen screen-manifesto" id="screen-manifesto" data-screen="manifesto" hidden>
+      <header class="page-chrome">
+        <h1 class="page-title">MANIFESTO</h1>
+        <button type="button" class="text-btn back-btn" data-go="why">back</button>
+      </header>
+      <div class="manifesto-stage">
+        <div class="manifesto-mid">
+          <div class="manifesto-take">
+            <p class="take-copy">Here is<br />my take:</p>
+            <svg class="take-pointer" aria-hidden="true">
+              <path d="" />
+            </svg>
+          </div>
+          <article class="manifesto-card" id="manifesto-card">
+            <p>
+              Asian cuisine beats Italian<br />
+              cuisine. It’s a matter of logic.
+            </p>
+            <p>
+              As a student living away from home,<br />
+              I’ve come to love the all-in-one<br />
+              dish: it’s the only smart choice.<br />
+              Putting everything together:<br />
+              proteins, carbs, fiber, and fats,<br />
+              all balanced in a single block. No<br />
+              scattered plates, no distractions,<br />
+              maximum efficiency.
+            </p>
+            <p>
+              This <button type="button" class="text-btn manifesto-ramen" data-go="howto">RAMEN</button> is the perfect example<br />
+              synthesizing my vision.
+            </p>
+          </article>
+          <p class="match-copy" id="match-copy"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen screen-howto" id="screen-howto" data-screen="howto" hidden>
+      <header class="page-chrome">
+        <h1 class="page-title">HOW<span class="howto-dash">-</span>TO</h1>
+        <button type="button" class="text-btn back-btn" data-go="home">back</button>
+      </header>
+        <img class="recipe-hero" id="recipe-hero" src="assets/w3-mushrooms.png" alt="" aria-hidden="true" />
+      <div class="recipe">
+        <div class="recipe-ing">
+          <p class="recipe-label">Ingredients</p>
+          <div class="recipe-rule" aria-hidden="true"></div>
+          <ul class="ingredient-list">
+            <li>
+              <button type="button" class="ingredient is-active" data-ingredient="mushrooms">
+                Mushrooms
+              </button>
+            </li>
+            <li>
+              <button type="button" class="ingredient" data-ingredient="eggs">Eggs</button>
+            </li>
+            <li>
+              <button type="button" class="ingredient" data-ingredient="meat">Meat</button>
+            </li>
+            <li>
+              <button type="button" class="ingredient" data-ingredient="noodles">Noodles</button>
+            </li>
+            <li>
+              <button type="button" class="ingredient" data-ingredient="scallion">Scallion</button>
+            </li>
+          </ul>
+        </div>
+        <div class="recipe-proc">
+          <p class="recipe-label">Procedure</p>
+          <div class="recipe-rule" aria-hidden="true"></div>
+          <p class="procedure" id="procedure"></p>
+        </div>
+      </div>
+    </section>
+
+    <script src="js/app.js?v=layout15"></script>
+  </body>
+</html>
