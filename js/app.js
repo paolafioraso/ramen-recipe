@@ -170,11 +170,41 @@ function setIngredient(id) {
   document.querySelectorAll(".ingredient").forEach((btn) => {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
+  setHeroImage(id);
+}
+
+let heroToken = 0;
+
+function setHeroImage(id) {
   const hero = document.querySelector(".recipe-hero");
-  if (hero && HERO[id]) {
-    hero.src = HERO[id];
+  const src = HERO[id];
+  if (!hero || !src) return;
+  const token = ++heroToken;
+  const probe = new Image();
+  const paint = () => {
+    if (token !== heroToken) return;
     hero.dataset.hero = id;
-  }
+    hero.src = src;
+  };
+  const ready = () => {
+    if (token !== heroToken) return;
+    if (typeof probe.decode === "function") {
+      probe.decode().then(paint).catch(paint);
+    } else {
+      paint();
+    }
+  };
+  probe.onload = ready;
+  probe.onerror = paint;
+  probe.src = src;
+  if (probe.complete) ready();
+}
+
+function preloadHeroes() {
+  Object.values(HERO).forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
 }
 
 function resetQuiz() {
@@ -560,6 +590,7 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("resize", fitType);
 fitType();
+preloadHeroes();
 setIngredient("mushrooms");
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;
