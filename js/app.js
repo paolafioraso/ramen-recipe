@@ -101,6 +101,8 @@ let lastCommandAt = 0;
 let verdictTimers = [];
 let manifestoTimers = [];
 let heroTimer = 0;
+let heroToken = 0;
+const heroCache = new Map();
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -163,6 +165,35 @@ function syncManifestoLayout() {
   );
 }
 
+function heroEls() {
+  return [...document.querySelectorAll(".recipe-hero")];
+}
+
+function preloadHeroes() {
+  Object.values(HERO).forEach((src) => {
+    if (heroCache.has(src)) return;
+    const img = new Image();
+    img.src = src;
+    heroCache.set(src, img);
+  });
+}
+
+function heroReady(src) {
+  const cached = heroCache.get(src);
+  if (cached && cached.complete) return Promise.resolve();
+  return new Promise((resolve) => {
+    const img = cached || new Image();
+    const done = () => resolve();
+    img.addEventListener("load", done, { once: true });
+    img.addEventListener("error", done, { once: true });
+    if (!cached) {
+      heroCache.set(src, img);
+      img.src = src;
+    }
+    if (img.complete) done();
+  });
+}
+
 function setIngredient(id, animate = true) {
   if (!PROCEDURES[id]) return;
   currentIngredient = id;
@@ -172,35 +203,38 @@ function setIngredient(id, animate = true) {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
   if (animate) playHero(id);
-  else {
-    const hero = document.querySelector(".recipe-hero");
-    if (hero && HERO[id]) {
-      hero.classList.remove("is-on");
-      hero.src = HERO[id];
-    }
-  }
 }
 
 function playHero(id) {
-  const hero = document.querySelector(".recipe-hero");
   const src = HERO[id];
-  if (!hero || !src) return;
+  const els = heroEls();
+  if (!src || !els.length) return;
+  const token = ++heroToken;
   window.clearTimeout(heroTimer);
-  hero.style.transition = "none";
-  hero.classList.remove("is-on");
-  void hero.offsetWidth;
-  hero.src = src;
-  hero.style.transition = "";
-  heroTimer = window.setTimeout(() => {
-    hero.classList.add("is-on");
-  }, 220);
+
+  const incoming = els.find((el) => !el.classList.contains("is-on")) || els[els.length - 1];
+  els.forEach((el) => {
+    el.style.transition = "none";
+    el.classList.remove("is-on");
+  });
+  void incoming.offsetWidth;
+  els.forEach((el) => el.style.removeProperty("transition"));
+
+  heroReady(src).then(() => {
+    if (token !== heroToken) return;
+    incoming.src = src;
+    heroTimer = window.setTimeout(() => {
+      if (token !== heroToken) return;
+      void incoming.offsetWidth;
+      incoming.classList.add("is-on");
+    }, 220);
+  });
 }
 
 function resetHero() {
   window.clearTimeout(heroTimer);
-  const hero = document.querySelector(".recipe-hero");
-  if (!hero) return;
-  hero.classList.remove("is-on");
+  heroToken += 1;
+  heroEls().forEach((el) => el.classList.remove("is-on"));
 }
 
 function resetQuiz() {
@@ -588,6 +622,7 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("resize", fitType);
 fitType();
+preloadHeroes();
 setIngredient("mushrooms", false);
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;
