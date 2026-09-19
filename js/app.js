@@ -309,6 +309,10 @@ function go(screen) {
   inEl.hidden = false;
   inEl.removeAttribute("aria-hidden");
 
+  if (location.hash.replace(/^#\/?/, "") !== to) {
+    history.replaceState(null, "", `#${to}`);
+  }
+
   if (from === "verdict") resetVerdict();
   if (from === "manifesto") resetManifesto();
   if (to === "howto") {
@@ -317,6 +321,7 @@ function go(screen) {
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
   if (to === "manifesto") {
+    matchCopyEl.innerHTML = matchCopy(quizPercent());
     resetManifesto();
     requestAnimationFrame(syncManifestoLayout);
     manifestoTimers.push(window.setTimeout(playManifesto, duration));
@@ -543,6 +548,16 @@ document.addEventListener("click", (event) => {
   startVoice();
 });
 
+function screenFromHash() {
+  const name = location.hash.replace(/^#\/?/, "");
+  return SCREENS.includes(name) ? name : null;
+}
+
+window.addEventListener("hashchange", () => {
+  const name = screenFromHash();
+  if (name && name !== currentScreen) go(name);
+});
+
 window.addEventListener("resize", fitType);
 fitType();
 setIngredient("mushrooms");
@@ -553,3 +568,6 @@ Object.entries(screens).forEach(([name, el]) => {
 });
 startVoice();
 document.title = "ramen";
+
+const startScreen = screenFromHash();
+if (startScreen && startScreen !== "intro") go(startScreen);
