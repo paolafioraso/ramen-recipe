@@ -334,7 +334,6 @@ function go(screen) {
   if (to === "howto") {
     setIngredient(currentIngredient, false);
     requestAnimationFrame(syncHowtoLayout);
-    heroTimer = window.setTimeout(() => playHero(currentIngredient), duration);
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
   if (to === "manifesto") {
@@ -388,6 +387,11 @@ function go(screen) {
     const next = pendingGo;
     pendingGo = null;
     if (next && next !== currentScreen) go(next);
+    else if (to === "howto") {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => playHero(currentIngredient));
+      });
+    }
   }
 
   outEl.addEventListener(
