@@ -29,11 +29,11 @@ const INGREDIENT_ALIASES = {
 };
 
 const HERO = {
-  mushrooms: "assets/w3-mushrooms.png?v=hero5",
-  eggs: "assets/w3-eggs.png?v=hero5",
-  meat: "assets/w3-meat.png?v=hero5",
-  noodles: "assets/w3-noodles.png?v=hero5",
-  scallion: "assets/w3-scallion.png?v=hero5",
+  mushrooms: "assets/how-mushrooms.png",
+  eggs: "assets/how-eggs.png",
+  meat: "assets/how-meat.png",
+  noodles: "assets/how-noodles.png",
+  scallion: "assets/how-scallion.png",
 };
 
 const LETTERBOX = {
@@ -170,42 +170,8 @@ function setIngredient(id) {
   document.querySelectorAll(".ingredient").forEach((btn) => {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
-  setHeroImage(id);
-}
-
-let heroToken = 0;
-
-function setHeroImage(id) {
   const hero = document.querySelector(".recipe-hero");
-  const src = HERO[id];
-  if (!hero || !src) return;
-  const token = ++heroToken;
-  const probe = new Image();
-  const paint = () => {
-    if (token !== heroToken) return;
-    if (!probe.naturalWidth) return;
-    hero.classList.remove("is-ready");
-    hero.dataset.hero = id;
-    hero.src = src;
-    if (hero.complete && hero.naturalWidth) hero.classList.add("is-ready");
-    else {
-      hero.onload = () => {
-        if (token !== heroToken) return;
-        if (hero.naturalWidth) hero.classList.add("is-ready");
-      };
-    }
-  };
-  probe.onload = paint;
-  probe.onerror = paint;
-  probe.src = src;
-  if (probe.complete) paint();
-}
-
-function preloadHeroes() {
-  Object.values(HERO).forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
+  if (hero && HERO[id]) hero.src = HERO[id];
 }
 
 function resetQuiz() {
@@ -591,7 +557,6 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("resize", fitType);
 fitType();
-preloadHeroes();
 setIngredient("mushrooms");
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;

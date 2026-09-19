@@ -592,36 +592,13 @@ body.is-transitioning {
   left: 50%;
   top: 50%;
   width: min(68vh, 52vw);
-  height: min(68vh, 52vw);
-  aspect-ratio: 1;
+  height: calc(min(68vh, 52vw) * 1004 / 1024);
   transform: translate(-50%, -50%);
-  transform-origin: center center;
   object-fit: contain;
   object-position: center;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
-  visibility: hidden;
-}
-
-.recipe-hero.is-ready {
-  visibility: visible;
-}
-
-.recipe-hero[data-hero="mushrooms"] {
-  transform: translate(-50%, -50%) scale(0.8882);
-}
-
-.recipe-hero[data-hero="meat"] {
-  transform: translate(-50%, -50%) scale(0.8507);
-}
-
-.recipe-hero[data-hero="noodles"] {
-  transform: translate(-50%, -50%) scale(0.9312);
-}
-
-.recipe-hero[data-hero="scallion"] {
-  transform: translate(-50%, -50%) scale(0.9002);
 }
 
 @media (max-width: 720px) {
