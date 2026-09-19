@@ -589,8 +589,6 @@ body.is-transitioning {
 }
 
 .recipe-hero-layer {
-  --hero-w: min(46vh, 34vw);
-  --hero-h: var(--hero-w);
   position: absolute;
   inset: 0;
   display: grid;
@@ -600,10 +598,11 @@ body.is-transitioning {
 }
 
 .recipe-hero {
+  --hero-size: min(28vh, 22vw);
   grid-area: 1 / 1;
   position: relative;
-  width: var(--hero-w);
-  height: var(--hero-h);
+  width: var(--hero-size);
+  height: var(--hero-size);
   min-width: 0;
   min-height: 0;
   margin: 0;
