@@ -578,8 +578,9 @@ body.is-transitioning {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(68vh, 52vw);
-  height: min(68vh, 52vw);
+  --hero-size: min(68vh, 52vw);
+  width: var(--hero-size);
+  height: calc(var(--hero-size) * 1004 / 1024);
   transform: translate(-50%, -50%);
   object-fit: contain;
   mix-blend-mode: screen;

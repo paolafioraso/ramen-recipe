@@ -29,11 +29,11 @@ const INGREDIENT_ALIASES = {
 };
 
 const HERO = {
-  mushrooms: "assets/w3-mushrooms.png",
-  eggs: "assets/w3-eggs.png",
-  meat: "assets/w3-meat.png",
-  noodles: "assets/w3-noodles.png",
-  scallion: "assets/w3-scallion.png",
+  mushrooms: "assets/w3-mushrooms.png?v=hero4",
+  eggs: "assets/w3-eggs.png?v=hero4",
+  meat: "assets/w3-meat.png?v=hero4",
+  noodles: "assets/w3-noodles.png?v=hero4",
+  scallion: "assets/w3-scallion.png?v=hero4",
 };
 
 const LETTERBOX = {
