@@ -28,14 +28,6 @@ const INGREDIENT_ALIASES = {
   "green onion": "scallion",
 };
 
-const HERO = {
-  mushrooms: "assets/w3-mushrooms.png?v=hero5",
-  eggs: "assets/w3-eggs.png?v=hero5",
-  meat: "assets/w3-meat.png?v=hero5",
-  noodles: "assets/w3-noodles.png?v=hero5",
-  scallion: "assets/w3-scallion.png?v=hero5",
-};
-
 const LETTERBOX = {
   intro: "#000000",
   home: "#000000",
@@ -100,6 +92,8 @@ let lastCommand = "";
 let lastCommandAt = 0;
 let verdictTimers = [];
 let manifestoTimers = [];
+let heroTimer = 0;
+let heroToken = 0;
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -162,7 +156,7 @@ function syncManifestoLayout() {
   );
 }
 
-function setIngredient(id) {
+function setIngredient(id, animate = true) {
   if (!PROCEDURES[id]) return;
   currentIngredient = id;
   if (id === "scallion") procedureEl.innerHTML = PROCEDURES[id];
@@ -170,11 +164,25 @@ function setIngredient(id) {
   document.querySelectorAll(".ingredient").forEach((btn) => {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
-  const hero = document.querySelector(".recipe-hero");
-  if (hero && HERO[id]) {
-    hero.src = HERO[id];
-    hero.dataset.hero = id;
-  }
+  if (animate) playHero(id);
+}
+
+function playHero(id) {
+  const next = document.querySelector(`.recipe-hero[data-hero="${id}"]`);
+  if (!next) return;
+  window.clearTimeout(heroTimer);
+  const token = ++heroToken;
+  document.querySelectorAll(".recipe-hero").forEach((el) => el.classList.remove("is-on"));
+  heroTimer = window.setTimeout(() => {
+    if (token !== heroToken) return;
+    next.classList.add("is-on");
+  }, 280);
+}
+
+function resetHero() {
+  window.clearTimeout(heroTimer);
+  heroToken += 1;
+  document.querySelectorAll(".recipe-hero").forEach((el) => el.classList.remove("is-on"));
 }
 
 function resetQuiz() {
@@ -309,14 +317,20 @@ function go(screen) {
   inEl.hidden = false;
   inEl.removeAttribute("aria-hidden");
 
+  if (location.hash.replace(/^#\/?/, "") !== to) {
+    history.replaceState(null, "", `#${to}`);
+  }
+
   if (from === "verdict") resetVerdict();
   if (from === "manifesto") resetManifesto();
+  if (from === "howto") resetHero();
   if (to === "howto") {
-    setIngredient(currentIngredient);
+    setIngredient(currentIngredient, false);
     requestAnimationFrame(syncHowtoLayout);
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
   if (to === "manifesto") {
+    matchCopyEl.innerHTML = matchCopy(quizPercent());
     resetManifesto();
     requestAnimationFrame(syncManifestoLayout);
     manifestoTimers.push(window.setTimeout(playManifesto, duration));
@@ -366,6 +380,11 @@ function go(screen) {
     const next = pendingGo;
     pendingGo = null;
     if (next && next !== currentScreen) go(next);
+    else if (to === "howto") {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => playHero(currentIngredient));
+      });
+    }
   }
 
   outEl.addEventListener(
@@ -543,9 +562,19 @@ document.addEventListener("click", (event) => {
   startVoice();
 });
 
+function screenFromHash() {
+  const name = location.hash.replace(/^#\/?/, "");
+  return SCREENS.includes(name) ? name : null;
+}
+
+window.addEventListener("hashchange", () => {
+  const name = screenFromHash();
+  if (name && name !== currentScreen) go(name);
+});
+
 window.addEventListener("resize", fitType);
 fitType();
-setIngredient("mushrooms");
+setIngredient("mushrooms", false);
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;
 Object.entries(screens).forEach(([name, el]) => {
@@ -553,3 +582,6 @@ Object.entries(screens).forEach(([name, el]) => {
 });
 startVoice();
 document.title = "ramen";
+
+const startScreen = screenFromHash();
+if (startScreen && startScreen !== "intro") go(startScreen);
