@@ -100,6 +100,7 @@ let lastCommand = "";
 let lastCommandAt = 0;
 let verdictTimers = [];
 let manifestoTimers = [];
+let heroTimer = 0;
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -162,7 +163,7 @@ function syncManifestoLayout() {
   );
 }
 
-function setIngredient(id) {
+function setIngredient(id, animate = true) {
   if (!PROCEDURES[id]) return;
   currentIngredient = id;
   if (id === "scallion") procedureEl.innerHTML = PROCEDURES[id];
@@ -170,8 +171,36 @@ function setIngredient(id) {
   document.querySelectorAll(".ingredient").forEach((btn) => {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
+  if (animate) playHero(id);
+  else {
+    const hero = document.querySelector(".recipe-hero");
+    if (hero && HERO[id]) {
+      hero.classList.remove("is-on");
+      hero.src = HERO[id];
+    }
+  }
+}
+
+function playHero(id) {
   const hero = document.querySelector(".recipe-hero");
-  if (hero && HERO[id]) hero.src = HERO[id];
+  const src = HERO[id];
+  if (!hero || !src) return;
+  window.clearTimeout(heroTimer);
+  hero.style.transition = "none";
+  hero.classList.remove("is-on");
+  void hero.offsetWidth;
+  hero.src = src;
+  hero.style.transition = "";
+  heroTimer = window.setTimeout(() => {
+    hero.classList.add("is-on");
+  }, 220);
+}
+
+function resetHero() {
+  window.clearTimeout(heroTimer);
+  const hero = document.querySelector(".recipe-hero");
+  if (!hero) return;
+  hero.classList.remove("is-on");
 }
 
 function resetQuiz() {
@@ -312,9 +341,11 @@ function go(screen) {
 
   if (from === "verdict") resetVerdict();
   if (from === "manifesto") resetManifesto();
+  if (from === "howto") resetHero();
   if (to === "howto") {
-    setIngredient(currentIngredient);
+    setIngredient(currentIngredient, false);
     requestAnimationFrame(syncHowtoLayout);
+    heroTimer = window.setTimeout(() => playHero(currentIngredient), duration);
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
   if (to === "manifesto") {
@@ -557,7 +588,7 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("resize", fitType);
 fitType();
-setIngredient("mushrooms");
+setIngredient("mushrooms", false);
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;
 Object.entries(screens).forEach(([name, el]) => {

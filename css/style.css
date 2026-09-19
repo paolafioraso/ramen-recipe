@@ -599,6 +599,12 @@ body.is-transitioning {
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.recipe-hero.is-on {
+  opacity: 1;
 }
 
 @media (max-width: 720px) {
