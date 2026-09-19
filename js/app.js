@@ -183,7 +183,7 @@ function playHero(id) {
   heroTimer = window.setTimeout(() => {
     if (token !== heroToken) return;
     next.classList.add("is-on");
-  }, 220);
+  }, 280);
 }
 
 function resetHero() {
