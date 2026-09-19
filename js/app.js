@@ -28,14 +28,6 @@ const INGREDIENT_ALIASES = {
   "green onion": "scallion",
 };
 
-const HERO = {
-  mushrooms: "assets/how-mushrooms.png",
-  eggs: "assets/how-eggs.png",
-  meat: "assets/how-meat.png",
-  noodles: "assets/how-noodles.png",
-  scallion: "assets/how-scallion.png",
-};
-
 const LETTERBOX = {
   intro: "#000000",
   home: "#000000",
@@ -102,7 +94,6 @@ let verdictTimers = [];
 let manifestoTimers = [];
 let heroTimer = 0;
 let heroToken = 0;
-const heroCache = new Map();
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -165,35 +156,6 @@ function syncManifestoLayout() {
   );
 }
 
-function heroEls() {
-  return [...document.querySelectorAll(".recipe-hero")];
-}
-
-function preloadHeroes() {
-  Object.values(HERO).forEach((src) => {
-    if (heroCache.has(src)) return;
-    const img = new Image();
-    img.src = src;
-    heroCache.set(src, img);
-  });
-}
-
-function heroReady(src) {
-  const cached = heroCache.get(src);
-  if (cached && cached.complete) return Promise.resolve();
-  return new Promise((resolve) => {
-    const img = cached || new Image();
-    const done = () => resolve();
-    img.addEventListener("load", done, { once: true });
-    img.addEventListener("error", done, { once: true });
-    if (!cached) {
-      heroCache.set(src, img);
-      img.src = src;
-    }
-    if (img.complete) done();
-  });
-}
-
 function setIngredient(id, animate = true) {
   if (!PROCEDURES[id]) return;
   currentIngredient = id;
@@ -206,35 +168,28 @@ function setIngredient(id, animate = true) {
 }
 
 function playHero(id) {
-  const src = HERO[id];
-  const els = heroEls();
-  if (!src || !els.length) return;
-  const token = ++heroToken;
+  const next = document.querySelector(`.recipe-hero[data-hero="${id}"]`);
+  if (!next) return;
   window.clearTimeout(heroTimer);
-
-  const incoming = els.find((el) => !el.classList.contains("is-on")) || els[els.length - 1];
-  els.forEach((el) => {
+  const token = ++heroToken;
+  document.querySelectorAll(".recipe-hero").forEach((el) => {
     el.style.transition = "none";
     el.classList.remove("is-on");
   });
-  void incoming.offsetWidth;
-  els.forEach((el) => el.style.removeProperty("transition"));
-
-  heroReady(src).then(() => {
-    if (token !== heroToken) return;
-    incoming.src = src;
-    heroTimer = window.setTimeout(() => {
-      if (token !== heroToken) return;
-      void incoming.offsetWidth;
-      incoming.classList.add("is-on");
-    }, 220);
+  void next.offsetWidth;
+  document.querySelectorAll(".recipe-hero").forEach((el) => {
+    el.style.removeProperty("transition");
   });
+  heroTimer = window.setTimeout(() => {
+    if (token !== heroToken) return;
+    next.classList.add("is-on");
+  }, 220);
 }
 
 function resetHero() {
   window.clearTimeout(heroTimer);
   heroToken += 1;
-  heroEls().forEach((el) => el.classList.remove("is-on"));
+  document.querySelectorAll(".recipe-hero").forEach((el) => el.classList.remove("is-on"));
 }
 
 function resetQuiz() {
@@ -622,7 +577,6 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("resize", fitType);
 fitType();
-preloadHeroes();
 setIngredient("mushrooms", false);
 renderQuizStep();
 document.body.style.background = LETTERBOX.intro;
