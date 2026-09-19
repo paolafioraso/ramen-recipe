@@ -113,12 +113,11 @@ function syncWhyLayout() {
 }
 
 function syncHowtoLayout() {
-  const dash = document.querySelector("#screen-howto .howto-dash");
-  const rule = document.querySelector(".recipe-ing .recipe-rule");
-  const recipe = document.querySelector(".recipe");
-  if (!dash || !rule || !recipe || screens.howto.hidden) return;
-  const width = dash.getBoundingClientRect().right - recipe.getBoundingClientRect().left;
-  rule.style.width = `${Math.max(0, Math.round(width))}px`;
+  const ingRule = document.querySelector(".recipe-ing .recipe-rule");
+  const procRule = document.querySelector(".recipe-proc .recipe-rule");
+  if (!ingRule || !procRule || screens.howto.hidden) return;
+  const width = procRule.getBoundingClientRect().width;
+  ingRule.style.width = `${Math.max(0, Math.round(width))}px`;
 }
 
 function syncManifestoLayout() {
