@@ -29,11 +29,11 @@ const INGREDIENT_ALIASES = {
 };
 
 const HERO = {
-  mushrooms: "assets/w3-mushrooms.png?v=hero4",
-  eggs: "assets/w3-eggs.png?v=hero4",
-  meat: "assets/w3-meat.png?v=hero4",
-  noodles: "assets/w3-noodles.png?v=hero4",
-  scallion: "assets/w3-scallion.png?v=hero4",
+  mushrooms: "assets/w3-mushrooms.png?v=hero5",
+  eggs: "assets/w3-eggs.png?v=hero5",
+  meat: "assets/w3-meat.png?v=hero5",
+  noodles: "assets/w3-noodles.png?v=hero5",
+  scallion: "assets/w3-scallion.png?v=hero5",
 };
 
 const LETTERBOX = {
@@ -170,7 +170,10 @@ function setIngredient(id) {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
   const hero = document.querySelector(".recipe-hero");
-  if (hero && HERO[id]) hero.src = HERO[id];
+  if (hero && HERO[id]) {
+    hero.src = HERO[id];
+    hero.dataset.hero = id;
+  }
 }
 
 function resetQuiz() {
