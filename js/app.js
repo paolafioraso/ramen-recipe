@@ -99,6 +99,7 @@ let hearing = false;
 let lastCommand = "";
 let lastCommandAt = 0;
 let verdictTimers = [];
+let manifestoTimers = [];
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -206,6 +207,32 @@ function matchCopy(percent) {
   return `<strong>WE MATCH<br />${percent}%.</strong>`;
 }
 
+function resetManifesto() {
+  manifestoTimers.forEach((id) => window.clearTimeout(id));
+  manifestoTimers = [];
+  document.querySelectorAll(".match-copy, .manifesto-take, .manifesto-card").forEach((el) => {
+    el.classList.remove("is-on");
+  });
+}
+
+function playManifesto() {
+  resetManifesto();
+  const beats = [
+    document.querySelector(".match-copy"),
+    document.querySelector(".manifesto-take"),
+    document.querySelector(".manifesto-card"),
+  ].filter(Boolean);
+  let delay = 220;
+  beats.forEach((el) => {
+    manifestoTimers.push(
+      window.setTimeout(() => {
+        el.classList.add("is-on");
+      }, delay)
+    );
+    delay += 780;
+  });
+}
+
 function showManifesto() {
   matchCopyEl.innerHTML = matchCopy(quizPercent());
   go("manifesto");
@@ -283,12 +310,17 @@ function go(screen) {
   inEl.removeAttribute("aria-hidden");
 
   if (from === "verdict") resetVerdict();
+  if (from === "manifesto") resetManifesto();
   if (to === "howto") {
     setIngredient(currentIngredient);
     requestAnimationFrame(syncHowtoLayout);
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
-  if (to === "manifesto") requestAnimationFrame(syncManifestoLayout);
+  if (to === "manifesto") {
+    resetManifesto();
+    requestAnimationFrame(syncManifestoLayout);
+    manifestoTimers.push(window.setTimeout(playManifesto, duration));
+  }
   if (to === "verdict") {
     resetVerdict();
     verdictTimers.push(window.setTimeout(playVerdict, duration));

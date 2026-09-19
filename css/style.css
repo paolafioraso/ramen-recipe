@@ -447,6 +447,19 @@ body.is-transitioning {
   color: #fff;
 }
 
+.match-copy,
+.manifesto-take,
+.manifesto-card {
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.match-copy.is-on,
+.manifesto-take.is-on,
+.manifesto-card.is-on {
+  opacity: 1;
+}
+
 .manifesto-card p {
   white-space: nowrap;
 }
