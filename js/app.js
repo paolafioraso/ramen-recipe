@@ -183,21 +183,22 @@ function setHeroImage(id) {
   const probe = new Image();
   const paint = () => {
     if (token !== heroToken) return;
+    if (!probe.naturalWidth) return;
+    hero.classList.remove("is-ready");
     hero.dataset.hero = id;
     hero.src = src;
-  };
-  const ready = () => {
-    if (token !== heroToken) return;
-    if (typeof probe.decode === "function") {
-      probe.decode().then(paint).catch(paint);
-    } else {
-      paint();
+    if (hero.complete && hero.naturalWidth) hero.classList.add("is-ready");
+    else {
+      hero.onload = () => {
+        if (token !== heroToken) return;
+        if (hero.naturalWidth) hero.classList.add("is-ready");
+      };
     }
   };
-  probe.onload = ready;
+  probe.onload = paint;
   probe.onerror = paint;
   probe.src = src;
-  if (probe.complete) ready();
+  if (probe.complete) paint();
 }
 
 function preloadHeroes() {

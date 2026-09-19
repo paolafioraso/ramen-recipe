@@ -593,12 +593,19 @@ body.is-transitioning {
   top: 50%;
   width: min(68vh, 52vw);
   height: min(68vh, 52vw);
+  aspect-ratio: 1;
   transform: translate(-50%, -50%);
   transform-origin: center center;
   object-fit: contain;
+  object-position: center;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
+  visibility: hidden;
+}
+
+.recipe-hero.is-ready {
+  visibility: visible;
 }
 
 .recipe-hero[data-hero="mushrooms"] {
