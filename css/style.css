@@ -110,7 +110,8 @@ body.is-transitioning {
 .intro-cta,
 .home-why .keyword,
 .home-howto .keyword,
-.manifesto-card .manifesto-ramen {
+.manifesto-card .manifesto-ramen,
+.procedure-verdict {
   font-size: var(--body-size);
   font-family: inherit;
   font-weight: 700;
@@ -236,7 +237,8 @@ body.is-transitioning {
 
 .screen-why .page-title,
 .screen-howto .page-title,
-.screen-manifesto .page-title {
+.screen-manifesto .page-title,
+.screen-verdict .page-title {
   top: var(--chrome-pad);
   font-size: var(--display-size);
   line-height: 0.9;
@@ -249,7 +251,8 @@ body.is-transitioning {
 
 .screen-why .page-chrome,
 .screen-howto .page-chrome,
-.screen-manifesto .page-chrome {
+.screen-manifesto .page-chrome,
+.screen-verdict .page-chrome {
   height: calc(var(--chrome-pad) + (var(--display-size) * 0.9) + 24px);
   overflow: visible;
 }
@@ -529,6 +532,46 @@ body.is-transitioning {
   font-size: 1em;
   line-height: 1.3;
   white-space: pre-line;
+}
+
+.procedure-verdict {
+  font-size: inherit;
+}
+
+/* ——— Verdict ——— */
+.screen-verdict {
+  background: #b9000b;
+  color: #fff;
+}
+
+.verdict-copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  font-size: var(--body-size);
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+.verdict-line {
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.verdict-line.is-on {
+  opacity: 1;
+}
+
+.verdict-line.verdict-space {
+  margin-top: 1.1em;
+}
+
+.verdict-ramen {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .recipe-hero {
