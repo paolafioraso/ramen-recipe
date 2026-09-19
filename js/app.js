@@ -1,4 +1,4 @@
-const SCREENS = ["intro", "home", "why", "manifesto", "howto"];
+const SCREENS = ["intro", "home", "why", "manifesto", "howto", "verdict"];
 
 const PROCEDURES = {
   mushrooms:
@@ -8,7 +8,7 @@ const PROCEDURES = {
   noodles:
     "Right after the meat, drop your noodles and the previously cooked mushrooms into the broth. Let it all cook together. Don't overthink it, just check the texture.",
   scallion:
-    "Turn off the heat and pour everything into a bowl. Slice the scallion into rounds and throw it on top raw. Add the halved eggs and the teriyaki sauce. Eat immediately :)",
+    'Turn off the heat and pour everything into a bowl. Slice the scallion into rounds and throw it on top raw. Add the halved eggs and the teriyaki sauce.\nSay <button type="button" class="text-btn procedure-verdict" data-go="verdict">VERDICT</button> to close the case.',
 };
 
 const INGREDIENT_ALIASES = {
@@ -42,6 +42,7 @@ const LETTERBOX = {
   why: "#b9000b",
   manifesto: "#b9000b",
   howto: "#223766",
+  verdict: "#b9000b",
 };
 
 const QUIZ = [
@@ -97,6 +98,7 @@ let recognition = null;
 let hearing = false;
 let lastCommand = "";
 let lastCommandAt = 0;
+let verdictTimers = [];
 
 function fitType() {
   document.documentElement.style.setProperty(
@@ -162,7 +164,8 @@ function syncManifestoLayout() {
 function setIngredient(id) {
   if (!PROCEDURES[id]) return;
   currentIngredient = id;
-  procedureEl.textContent = PROCEDURES[id];
+  if (id === "scallion") procedureEl.innerHTML = PROCEDURES[id];
+  else procedureEl.textContent = PROCEDURES[id];
   document.querySelectorAll(".ingredient").forEach((btn) => {
     btn.classList.toggle("is-active", btn.dataset.ingredient === id);
   });
@@ -223,6 +226,26 @@ function selectChoice(choice) {
   }, 280);
 }
 
+function resetVerdict() {
+  verdictTimers.forEach((id) => window.clearTimeout(id));
+  verdictTimers = [];
+  document.querySelectorAll(".verdict-line").forEach((el) => el.classList.remove("is-on"));
+}
+
+function playVerdict() {
+  resetVerdict();
+  const lines = [...document.querySelectorAll(".verdict-line")];
+  let delay = 220;
+  lines.forEach((el) => {
+    verdictTimers.push(
+      window.setTimeout(() => {
+        el.classList.add("is-on");
+      }, delay)
+    );
+    delay += el.dataset.beat === "1" ? 1200 : 780;
+  });
+}
+
 function go(screen) {
   if (!screens[screen]) return;
   if (transitioning) {
@@ -256,12 +279,17 @@ function go(screen) {
   inEl.hidden = false;
   inEl.removeAttribute("aria-hidden");
 
+  if (from === "verdict") resetVerdict();
   if (to === "howto") {
     setIngredient(currentIngredient);
     requestAnimationFrame(syncHowtoLayout);
   }
   if (to === "why") requestAnimationFrame(syncWhyLayout);
   if (to === "manifesto") requestAnimationFrame(syncManifestoLayout);
+  if (to === "verdict") {
+    resetVerdict();
+    verdictTimers.push(window.setTimeout(playVerdict, duration));
+  }
 
   const move = {
     right: "translate3d(100%, 0, 0)",
@@ -332,6 +360,9 @@ function transitionKind(from, to) {
     "manifesto:home": "left",
     "manifesto:howto": "left",
     "howto:manifesto": "up",
+    "howto:verdict": "up",
+    "verdict:howto": "down",
+    "verdict:home": "left",
   };
   return map[`${from}:${to}`] || "fade";
 }
@@ -379,6 +410,11 @@ function handleCommand(raw) {
     go("why");
     return true;
   }
+  if (/\bverdict\b/.test(text)) {
+    remember(text);
+    go("verdict");
+    return true;
+  }
   if (/\bmanifesto\b/.test(text) && quizComplete()) {
     remember(text);
     go("manifesto");
@@ -387,6 +423,7 @@ function handleCommand(raw) {
   if (/\bback\b/.test(text)) {
     remember(text);
     if (currentScreen === "manifesto") go("why");
+    else if (currentScreen === "verdict") go("howto");
     else if (currentScreen === "why" || currentScreen === "howto") go("home");
     else if (currentScreen === "home") go("intro");
     return true;
