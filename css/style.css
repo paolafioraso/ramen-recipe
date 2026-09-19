@@ -472,7 +472,6 @@ body.is-transitioning {
 .screen-howto {
   background: var(--recipe-bg);
   color: var(--recipe-ink);
-  isolation: isolate;
 }
 
 .recipe {
@@ -594,41 +593,18 @@ body.is-transitioning {
   top: 50%;
   width: min(68vh, 52vw);
   height: calc(min(68vh, 52vw) * 1004 / 1024);
-  transform: translate(-50%, -50%) translateZ(0);
+  transform: translate(-50%, -50%);
   object-fit: contain;
   object-position: center;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
   opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.55s ease, visibility 0s linear 0.55s;
+  transition: opacity 0.55s ease;
 }
 
 .recipe-hero.is-on {
   opacity: 1;
-  visibility: visible;
-  transition: opacity 0.55s ease, visibility 0s;
-}
-
-.recipe-hero-warm {
-  position: fixed;
-  left: -200vw;
-  top: 0;
-  width: min(68vh, 52vw);
-  height: calc(min(68vh, 52vw) * 1004 / 1024);
-  background: var(--recipe-bg);
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.recipe-hero-warm img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  mix-blend-mode: screen;
 }
 
 @media (max-width: 720px) {
