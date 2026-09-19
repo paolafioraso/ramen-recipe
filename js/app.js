@@ -172,14 +172,7 @@ function playHero(id) {
   if (!next) return;
   window.clearTimeout(heroTimer);
   const token = ++heroToken;
-  document.querySelectorAll(".recipe-hero").forEach((el) => {
-    el.style.transition = "none";
-    el.classList.remove("is-on");
-  });
-  void next.offsetWidth;
-  document.querySelectorAll(".recipe-hero").forEach((el) => {
-    el.style.removeProperty("transition");
-  });
+  document.querySelectorAll(".recipe-hero").forEach((el) => el.classList.remove("is-on"));
   heroTimer = window.setTimeout(() => {
     if (token !== heroToken) return;
     next.classList.add("is-on");
