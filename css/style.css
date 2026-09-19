@@ -589,7 +589,7 @@ body.is-transitioning {
 }
 
 .recipe-hero-layer {
-  --hero-w: min(56vh, 42vw);
+  --hero-w: min(46vh, 34vw);
   --hero-h: var(--hero-w);
   position: absolute;
   inset: 0;
